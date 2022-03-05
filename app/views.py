@@ -38,7 +38,7 @@ def login():
             # Get the username and password values from the form.
             username = form.username.data
             password = form.password.data
-            user = UserProfile.query.filter(username=username).first()
+            user = UserProfile.query.filter_by(username=username).first()
             # using your model, query database for a user based on the username
             # and password submitted. Remember you need to compare the password hash.
             # You will need to import the appropriate function to do so.
@@ -68,6 +68,12 @@ def load_user(id):
 ###
 # The functions below should be applicable to all Flask apps.
 ###
+
+@app.route('/secure-page')
+@login_required
+def secure_page():
+    return render_template("secure_page.html")
+
 
 # Flash errors from the form if validation fails
 def flash_errors(form):
