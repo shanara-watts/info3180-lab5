@@ -27,9 +27,8 @@ def about():
     """Render the website's about page."""
     return render_template('about.html')
 
-
 @app.route("/login", methods=["GET", "POST"])
-def login():
+def login():   
     form = LoginForm()
     if request.method == "POST":
         # change this to actually validate the entire form submission
@@ -51,13 +50,24 @@ def login():
                     remember_me = True
 
             # get user id, load into session
-            login_user(user)
+                login_user(user)
 
             # remember to flash a message to the user
             flash('Logged in successfully.', 'success')
             return redirect(url_for("secure_page"))  # they should be redirected to a secure-page route instead
     return render_template("login.html", form=form)
 
+@app.route('/secure-page')
+@login_required
+def secure_page():
+    return render_template('secure_page.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("You have been logged out.", 'danger')
+    return redirect(url_for("home"))
 
 # user_loader callback. This callback is used to reload the user object from
 # the user ID stored in the session
@@ -68,11 +78,6 @@ def load_user(id):
 ###
 # The functions below should be applicable to all Flask apps.
 ###
-
-@app.route('/secure-page')
-@login_required
-def secure_page():
-    return render_template("secure_page.html")
 
 
 # Flash errors from the form if validation fails
